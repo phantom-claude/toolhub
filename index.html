@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyToolHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: #0f0f1a;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Animated gradient background */
+        .bg {
+            position: fixed; inset: 0; z-index: 0;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 40%, #16213e 70%, #0f0f1a 100%);
+        }
+        .bg::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at 30% 40%, rgba(99, 102, 241, .12) 0%, transparent 60%),
+                        radial-gradient(circle at 70% 60%, rgba(16, 185, 129, .10) 0%, transparent 60%);
+            animation: pulse 8s ease-in-out infinite alternate;
+        }
+        @keyframes pulse {
+            0% { opacity: .6; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+
+        .container {
+            position: relative; z-index: 1;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: .4rem;
+            background: linear-gradient(135deg, #6366f1, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #888;
+            margin-bottom: 3rem;
+        }
+
+        .cards {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            position: relative;
+            width: 320px;
+            padding: 2.5rem 2rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid rgba(255, 255, 255, .08);
+            backdrop-filter: blur(16px);
+            text-decoration: none;
+            color: inherit;
+            transition: transform .25s, box-shadow .25s, border-color .25s;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute; inset: 0;
+            border-radius: 20px;
+            opacity: 0;
+            transition: opacity .3s;
+        }
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255, 255, 255, .18);
+        }
+
+        .card.devtoolbox:hover { box-shadow: 0 12px 40px rgba(99, 102, 241, .25); }
+        .card.devtoolbox:hover::before { background: linear-gradient(135deg, rgba(99,102,241,.08), transparent); opacity: 1; }
+
+        .card.stocklens:hover { box-shadow: 0 12px 40px rgba(16, 185, 129, .25); }
+        .card.stocklens:hover::before { background: linear-gradient(135deg, rgba(16,185,129,.08), transparent); opacity: 1; }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: .5rem;
+        }
+
+        .card p {
+            font-size: .95rem;
+            color: #999;
+            line-height: 1.5;
+        }
+
+        .card .badge {
+            display: inline-block;
+            margin-top: 1.2rem;
+            padding: .35rem .9rem;
+            border-radius: 20px;
+            font-size: .78rem;
+            font-weight: 600;
+            letter-spacing: .03em;
+        }
+        .card.devtoolbox .badge { background: rgba(99,102,241,.15); color: #818cf8; }
+        .card.stocklens .badge { background: rgba(16,185,129,.15); color: #34d399; }
+
+        footer {
+            position: fixed;
+            bottom: 1.5rem;
+            z-index: 1;
+            font-size: .8rem;
+            color: #555;
+        }
+
+        @media (max-width: 700px) {
+            h1 { font-size: 2rem; }
+            .cards { flex-direction: column; align-items: center; }
+            .card { width: 90vw; max-width: 360px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg"></div>
+    <div class="container">
+        <h1>🛠 MyToolHub</h1>
+        <p class="subtitle">Personal utilities — pick a tool</p>
+        <div class="cards">
+            <a href="devtoolbox/index.html" class="card devtoolbox">
+                <div class="card-icon">⚙️</div>
+                <h2>DevToolbox</h2>
+                <p>20+ developer utilities — JSON formatter, Base64, regex tester, color picker, and more.</p>
+                <span class="badge">20+ Tools</span>
+            </a>
+            <a href="stocklens/index.html" class="card stocklens">
+                <div class="card-icon">📈</div>
+                <h2>StockLens</h2>
+                <p>Covered Call premium calculator with real-time stock prices, VIX gauge, and multi-expiry analysis.</p>
+                <span class="badge">Finance</span>
+            </a>
+        </div>
+    </div>
+    <footer>MyToolHub &bull; phantom-claude</footer>
+</body>
+</html>

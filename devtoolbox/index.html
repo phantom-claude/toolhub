@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevToolbox — Online Developer Utilities</title>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" defer></script>
+</head>
+<body>
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <h1>⚙ DevToolbox</h1>
+    <input type="text" id="tool-search" placeholder="Search tools..." autocomplete="off">
+  </div>
+  <ul id="tool-list">
+    <li><a href="#" data-tool="json-formatter" class="active">{ } JSON Formatter</a></li>
+    <li><a href="#" data-tool="markdown-editor">✎ Markdown Editor</a></li>
+    <li><a href="#" data-tool="base64-converter">⇄ Base64 Converter</a></li>
+    <li><a href="#" data-tool="url-encoder">🔗 URL Encoder</a></li>
+    <li><a href="#" data-tool="color-picker">🎨 Color Picker</a></li>
+    <li><a href="#" data-tool="hash-generator"># Hash Generator</a></li>
+    <li><a href="#" data-tool="password-generator">🔑 Password Generator</a></li>
+    <li><a href="#" data-tool="qr-generator">⊞ QR Generator</a></li>
+    <li><a href="#" data-tool="timestamp-converter">⏱ Timestamp Converter</a></li>
+    <li><a href="#" data-tool="unit-converter">⇔ Unit Converter</a></li>
+    <li><a href="#" data-tool="file-converter">📄 File Converter</a></li>
+    <li><a href="#" data-tool="regex-tester">/./ Regex Tester</a></li>
+    <li><a href="#" data-tool="json-diff">⇿ JSON Diff</a></li>
+    <li><a href="#" data-tool="sql-formatter">🗃 SQL Formatter</a></li>
+    <li><a href="#" data-tool="html-encoder">&lt;/&gt; HTML Encoder</a></li>
+    <li><a href="#" data-tool="uuid-generator">◻ UUID Generator</a></li>
+    <li><a href="#" data-tool="json-to-csv">📊 JSON to CSV</a></li>
+    <li><a href="#" data-tool="css-minifier">🎀 CSS Minifier</a></li>
+    <li><a href="#" data-tool="random-selector">🎲 Random Selector</a></li>
+    <li><a href="#" data-tool="jwt-decoder">🔓 JWT Decoder</a></li>
+  </ul>
+</nav>
+
+<button id="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
+
+<main id="content">
+
+  <!-- JSON Formatter -->
+  <section id="json-formatter" class="tool-panel active">
+    <div class="jf-hero">
+      <div class="jf-hero-icon">{ }</div>
+      <div>
+        <h2>JSON Formatter &amp; Validator</h2>
+        <p class="tool-desc">Format, validate, minify, query, compare, and explore JSON data</p>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="jf-toolbar">
+      <div class="jf-toolbar-group">
+        <button onclick="jsonFormat()" class="jf-btn jf-btn-primary" title="Pretty-print with indentation">
+          <span class="jf-btn-icon">⟨⟩</span> Format
+        </button>
+        <button onclick="jsonMinify()" class="jf-btn" title="Remove all whitespace">
+          <span class="jf-btn-icon">⊟</span> Minify
+        </button>
+        <button onclick="jsonValidate()" class="jf-btn" title="Check if JSON is valid">
+          <span class="jf-btn-icon">✓</span> Validate
+        </button>
+        <button onclick="jsonSortKeys()" class="jf-btn" title="Sort all object keys alphabetically">
+          <span class="jf-btn-icon">↕</span> Sort Keys
+        </button>
+        <button onclick="jsonFlatten()" class="jf-btn" title="Flatten nested objects to dot notation">
+          <span class="jf-btn-icon">▤</span> Flatten
+        </button>
+        <button onclick="jsonUnflatten()" class="jf-btn" title="Unflatten dot-notation keys back to nested objects">
+          <span class="jf-btn-icon">▦</span> Unflatten
+        </button>
+        <button onclick="jsonStringify()" class="jf-btn" title="Escape JSON into a string literal">
+          <span class="jf-btn-icon">&quot;</span> Escape
+        </button>
+        <button onclick="jsonUnescape()" class="jf-btn" title="Unescape a string literal back to JSON">
+          <span class="jf-btn-icon">↩</span> Unescape
+        </button>
+      </div>
+      <div class="jf-toolbar-group">
+        <button onclick="jsonCopyOutput()" class="jf-btn jf-btn-ghost" title="Copy output">📋 Copy</button>
+        <button onclick="jsonDownload()" class="jf-btn jf-btn-ghost" title="Download as .json">💾 Save</button>
+        <button onclick="jsonLoadSample()" class="jf-btn jf-btn-ghost" title="Load example JSON">📝 Sample</button>
+        <button onclick="jsonClearAll()" class="jf-btn jf-btn-ghost jf-btn-danger" title="Clear everything">🗑 Clear</button>
+      </div>
+    </div>
+
+    <!-- Options bar -->
+    <div class="jf-options">
+      <label class="jf-opt">
+        <span>Indent:</span>
+        <select id="json-indent" onchange="jsonFormat()">
+          <option value="2" selected>2 spaces</option>
+          <option value="4">4 spaces</option>
+          <option value="\t">Tab</option>
+        </select>
+      </label>
+      <label class="jf-opt">
+        <input type="checkbox" id="json-auto" checked> Auto-format on paste
+      </label>
+      <label class="jf-opt">
+        <input type="checkbox" id="json-highlight" checked> Syntax highlighting
+      </label>
+      <label class="jf-opt">
+        <input type="checkbox" id="json-line-numbers" checked> Line numbers
+      </label>
+    </div>
+
+    <!-- JSON Path finder -->
+    <div class="jf-path-bar">
+      <span class="jf-path-icon">🔍</span>
+      <input type="text" id="json-path" placeholder="JSON Path — e.g.  $.store.book[0].title  or  $.users[*].name" autocomplete="off">
+      <button onclick="jsonQueryPath()" class="jf-btn jf-btn-primary jf-btn-sm">Query</button>
+    </div>
+
+    <!-- Editor area -->
+    <div class="jf-editor-wrap">
+      <div class="jf-editor-col">
+        <div class="jf-editor-header">
+          <span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span>
+          <span class="jf-editor-title">Input</span>
+          <span class="jf-char-count" id="json-in-count">0 chars</span>
+        </div>
+        <div class="jf-editor-body">
+          <div class="jf-line-numbers" id="json-in-lines"></div>
+          <textarea id="json-in" class="jf-textarea" placeholder='Paste or type your JSON here...
+{
+  "name": "John Doe",
+  "age": 30,
+  "address": {
+    "street": "123 Main St",
+    "city": "New York"
+  },
+  "hobbies": ["reading", "coding"]
+}' spellcheck="false" oninput="jsonInputChanged()"></textarea>
+        </div>
+      </div>
+
+      <div class="jf-editor-col">
+        <div class="jf-editor-header">
+          <span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span>
+          <span class="jf-editor-title">Output</span>
+          <span class="jf-char-count" id="json-out-count">0 chars</span>
+        </div>
+        <!-- Output tabs -->
+        <div class="jf-out-tabs">
+          <button class="jf-tab active" data-tab="raw" onclick="jsonSwitchTab(this,'raw')">Raw</button>
+          <button class="jf-tab" data-tab="highlighted" onclick="jsonSwitchTab(this,'highlighted')">Highlighted</button>
+          <button class="jf-tab" data-tab="tree" onclick="jsonSwitchTab(this,'tree')">Tree View</button>
+        </div>
+        <div class="jf-editor-body">
+          <div class="jf-line-numbers" id="json-out-lines"></div>
+          <textarea id="json-out" class="jf-textarea" readonly></textarea>
+          <div id="json-out-highlighted" class="jf-highlighted" style="display:none"></div>
+          <div id="json-out-tree" class="jf-tree" style="display:none"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status bar -->
+    <div class="jf-statusbar">
+      <div id="json-status" class="jf-status-msg"></div>
+      <div class="jf-stats" id="json-stats"></div>
+    </div>
+  </section>
+
+  <!-- Markdown Editor -->
+  <section id="markdown-editor" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#34d399,#06b6d4)">✎</div>
+      <div><h2>Markdown Editor</h2><p class="tool-desc">Write Markdown and preview rendered HTML in real time</p></div></div>
+    <div class="t-split">
+      <div class="t-col">
+        <div class="t-col-head"><span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span><span class="t-col-title">Markdown</span></div>
+        <textarea id="md-in" class="t-textarea" placeholder="# Hello World&#10;&#10;Write **bold**, *italic*, or `code` here..." oninput="renderMarkdown()"></textarea>
+      </div>
+      <div class="t-col">
+        <div class="t-col-head"><span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span><span class="t-col-title">Preview</span></div>
+        <div id="md-out" class="t-preview preview-box"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Base64 Converter -->
+  <section id="base64-converter" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#a78bfa,#6366f1)">⇄</div>
+      <div><h2>Base64 Converter</h2><p class="tool-desc">Encode or decode Base64 strings</p></div></div>
+    <div class="t-actions">
+      <button class="t-btn t-btn-primary" onclick="b64Encode()">Encode</button>
+      <button class="t-btn" onclick="b64Decode()">Decode</button>
+      <button class="t-btn t-btn-ghost" onclick="clearFields('b64-in','b64-out')">Clear</button>
+    </div>
+    <div class="t-split">
+      <div class="t-col"><div class="t-col-head"><span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span><span class="t-col-title">Input</span></div>
+        <textarea id="b64-in" class="t-textarea" placeholder="Hello World"></textarea></div>
+      <div class="t-col"><div class="t-col-head"><span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span><span class="t-col-title">Output</span></div>
+        <textarea id="b64-out" class="t-textarea" readonly></textarea></div>
+    </div>
+  </section>
+
+  <!-- URL Encoder -->
+  <section id="url-encoder" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#f472b6,#ec4899)">🔗</div>
+      <div><h2>URL Encoder / Decoder</h2><p class="tool-desc">Encode or decode URL components</p></div></div>
+    <div class="t-actions">
+      <button class="t-btn t-btn-primary" onclick="urlEnc()">Encode</button>
+      <button class="t-btn" onclick="urlDec()">Decode</button>
+      <button class="t-btn t-btn-ghost" onclick="clearFields('url-in','url-out')">Clear</button>
+    </div>
+    <div class="t-split">
+      <div class="t-col"><div class="t-col-head"><span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span><span class="t-col-title">Input</span></div>
+        <textarea id="url-in" class="t-textarea" placeholder="hello world & foo=bar"></textarea></div>
+      <div class="t-col"><div class="t-col-head"><span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span><span class="t-col-title">Output</span></div>
+        <textarea id="url-out" class="t-textarea" readonly></textarea></div>
+    </div>
+  </section>
+
+  <!-- Color Picker -->
+  <section id="color-picker" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#f59e0b,#ef4444,#a855f7,#3b82f6,#22c55e)">🎨</div>
+      <div><h2>Color Picker</h2><p class="tool-desc">Pick a color and get HEX, RGB, and HSL values</p></div></div>
+    <div class="cp-wrap">
+      <div class="cp-picker-area">
+        <input type="color" id="color-input" value="#4f8cff" oninput="updateColor()" class="cp-native">
+        <div id="color-swatch" class="cp-swatch"></div>
+      </div>
+      <div class="cp-values">
+        <div class="cp-value-row">
+          <span class="cp-label">HEX</span>
+          <input id="color-hex" readonly class="cp-input">
+          <button class="t-btn t-btn-ghost t-btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('color-hex').value)">Copy</button>
+        </div>
+        <div class="cp-value-row">
+          <span class="cp-label">RGB</span>
+          <input id="color-rgb" readonly class="cp-input">
+          <button class="t-btn t-btn-ghost t-btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('color-rgb').value)">Copy</button>
+        </div>
+        <div class="cp-value-row">
+          <span class="cp-label">HSL</span>
+          <input id="color-hsl" readonly class="cp-input">
+          <button class="t-btn t-btn-ghost t-btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('color-hsl').value)">Copy</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hash Generator -->
+  <section id="hash-generator" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#64748b,#475569)">#</div>
+      <div><h2>Hash Generator</h2><p class="tool-desc">Generate SHA-1, SHA-256, SHA-512 hashes in real time</p></div></div>
+    <div class="t-card">
+      <label class="t-label">Input Text</label>
+      <textarea id="hash-in" class="t-textarea" placeholder="Enter text to hash..." oninput="generateHashes()" style="min-height:120px"></textarea>
+      <div class="hash-grid">
+        <div class="hash-item"><span class="hash-algo">SHA-1</span><input id="hash-sha1" readonly class="hash-val"><button class="t-btn t-btn-ghost t-btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('hash-sha1').value)">Copy</button></div>
+        <div class="hash-item"><span class="hash-algo">SHA-256</span><input id="hash-sha256" readonly class="hash-val"><button class="t-btn t-btn-ghost t-btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('hash-sha256').value)">Copy</button></div>
+        <div class="hash-item"><span class="hash-algo">SHA-512</span><input id="hash-sha512" readonly class="hash-val"><button class="t-btn t-btn-ghost t-btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('hash-sha512').value)">Copy</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Password Generator -->
+  <section id="password-generator" class="tool-panel">
+    <div class="pg-hero">
+      <div class="pg-hero-icon">🔑</div>
+      <div>
+        <h2>Password Generator</h2>
+        <p class="tool-desc">Generate secure passwords with beautiful patterns</p>
+      </div>
+    </div>
+
+    <!-- Password Style Cards -->
+    <div class="pg-styles">
+      <div class="pg-style-card active" data-style="smart" onclick="pgSelectStyle(this,'smart')">
+        <div class="pg-card-glow"></div>
+        <div class="pg-card-icon">🧩</div>
+        <div class="pg-card-label">Smart Pattern</div>
+        <div class="pg-card-preview" id="pg-preview-smart">Xxg01-Ipp83-Ngs48</div>
+        <div class="pg-card-tag">Memorable &amp; Secure</div>
+      </div>
+      <div class="pg-style-card" data-style="random" onclick="pgSelectStyle(this,'random')">
+        <div class="pg-card-glow"></div>
+        <div class="pg-card-icon">🎰</div>
+        <div class="pg-card-label">Random Mix</div>
+        <div class="pg-card-preview" id="pg-preview-random">K9$mP@qL2#vX</div>
+        <div class="pg-card-tag">Maximum Security</div>
+      </div>
+      <div class="pg-style-card" data-style="pronounceable" onclick="pgSelectStyle(this,'pronounceable')">
+        <div class="pg-card-glow"></div>
+        <div class="pg-card-icon">🗣</div>
+        <div class="pg-card-label">Pronounceable</div>
+        <div class="pg-card-preview" id="pg-preview-pronounceable">Bix-Kef-Nup-792</div>
+        <div class="pg-card-tag">Easy to Remember</div>
+      </div>
+      <div class="pg-style-card" data-style="passphrase" onclick="pgSelectStyle(this,'passphrase')">
+        <div class="pg-card-glow"></div>
+        <div class="pg-card-icon">📖</div>
+        <div class="pg-card-label">Passphrase</div>
+        <div class="pg-card-preview" id="pg-preview-passphrase">brave-tiger-jump-42</div>
+        <div class="pg-card-tag">Words &amp; Numbers</div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="pg-controls">
+      <div class="pg-sliders">
+        <div class="pg-slider-row">
+          <label>Password Length: <strong id="pg-len-val">16</strong></label>
+          <input type="range" id="pg-len" min="4" max="128" value="16" oninput="pgUpdateLen()">
+        </div>
+        <div class="pg-slider-row" id="pg-seg-row">
+          <label>Pattern Segments: <strong id="pg-seg-val">3</strong></label>
+          <input type="range" id="pg-seg" min="2" max="6" value="3" oninput="pgUpdateSeg()">
+        </div>
+      </div>
+
+      <div class="pg-charsets">
+        <label class="pg-charset" title="A-Z">
+          <input type="checkbox" id="pg-upper" checked>
+          <span class="pg-charset-box">
+            <span class="pg-charset-icon">A</span>
+            Uppercase (A-Z)
+          </span>
+        </label>
+        <label class="pg-charset" title="a-z">
+          <input type="checkbox" id="pg-lower" checked>
+          <span class="pg-charset-box">
+            <span class="pg-charset-icon">a</span>
+            Lowercase (a-z)
+          </span>
+        </label>
+        <label class="pg-charset" title="0-9">
+          <input type="checkbox" id="pg-digits" checked>
+          <span class="pg-charset-box">
+            <span class="pg-charset-icon">1</span>
+            Numbers (0-9)
+          </span>
+        </label>
+        <label class="pg-charset" title="!@#$%^&*">
+          <input type="checkbox" id="pg-symbols" checked>
+          <span class="pg-charset-box">
+            <span class="pg-charset-icon">#</span>
+            Symbols (!@#$%^&amp;*)
+          </span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Generate buttons -->
+    <div class="pg-actions">
+      <button class="pg-btn-generate" onclick="pgGenerate(1)">
+        <span class="pg-btn-spark">✦</span> Generate Password
+      </button>
+      <button class="pg-btn-multi" onclick="pgGenerate(5)">Generate 5</button>
+    </div>
+
+    <!-- Output -->
+    <div class="pg-output" id="pg-output">
+      <div class="pg-empty-state">
+        <div class="pg-empty-icon">🔐</div>
+        <div>Click generate to create a password</div>
+      </div>
+    </div>
+
+    <!-- History -->
+    <div class="pg-history-wrap" id="pg-history-wrap" style="display:none">
+      <div class="pg-history-header">
+        <span>📋 History</span>
+        <button class="pg-btn-clear" onclick="pgClearHistory()">Clear</button>
+      </div>
+      <div class="pg-history" id="pg-history"></div>
+    </div>
+  </section>
+
+  <!-- QR Generator -->
+  <section id="qr-generator" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#10b981,#059669)">⊞</div>
+      <div><h2>QR Code Generator</h2><p class="tool-desc">Generate QR codes from text or URLs</p></div></div>
+    <div class="t-card">
+      <label class="t-label">Text / URL</label>
+      <textarea id="qr-in" class="t-textarea" placeholder="https://example.com" style="min-height:100px"></textarea>
+      <div class="t-actions"><button class="t-btn t-btn-primary" onclick="genQR()">Generate QR Code</button></div>
+      <div id="qr-out" class="qr-display"></div>
+    </div>
+  </section>
+
+  <!-- Timestamp Converter -->
+  <section id="timestamp-converter" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706)">⏱</div>
+      <div><h2>Timestamp Converter</h2><p class="tool-desc">Convert between Unix timestamps and human-readable dates</p></div></div>
+    <div class="t-card">
+      <div class="ts-grid">
+        <div><label class="t-label">Unix Timestamp (seconds)</label><input type="number" id="ts-unix" placeholder="1700000000" class="t-input"></div>
+        <div><label class="t-label">Date / Time</label><input type="datetime-local" id="ts-date" step="1" class="t-input"></div>
+      </div>
+      <div class="t-actions">
+        <button class="t-btn t-btn-primary" onclick="tsToDate()">Timestamp → Date</button>
+        <button class="t-btn" onclick="dateToTs()">Date → Timestamp</button>
+        <button class="t-btn t-btn-ghost" onclick="tsNow()">⏱ Now</button>
+      </div>
+      <div id="ts-result" class="t-status"></div>
+    </div>
+  </section>
+
+  <!-- Unit Converter -->
+  <section id="unit-converter" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#06b6d4,#0891b2)">⇔</div>
+      <div><h2>Unit Converter</h2><p class="tool-desc">Convert between common units of measurement</p></div></div>
+    <div class="t-card">
+      <div class="uc-category-row">
+        <select id="unit-category" onchange="populateUnits()" class="t-select">
+          <option value="length">📏 Length</option>
+          <option value="weight">⚖ Weight</option>
+          <option value="temperature">🌡 Temperature</option>
+          <option value="data">💾 Data Size</option>
+        </select>
+      </div>
+      <div class="uc-convert-row">
+        <input type="number" id="unit-val" placeholder="1" oninput="convertUnit()" class="t-input uc-val">
+        <select id="unit-from" onchange="convertUnit()" class="t-select"></select>
+        <span class="uc-arrow">→</span>
+        <input type="text" id="unit-result" readonly class="t-input uc-val uc-result">
+        <select id="unit-to" onchange="convertUnit()" class="t-select"></select>
+      </div>
+    </div>
+  </section>
+
+  <!-- File Converter -->
+  <section id="file-converter" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)">📄</div>
+      <div><h2>File Converter</h2><p class="tool-desc">Convert images between formats (PNG, JPEG, WebP) in the browser</p></div></div>
+    <div class="t-card">
+      <div class="fc-drop" id="fc-drop" onclick="document.getElementById('file-input').click()">
+        <div class="fc-drop-icon">📁</div>
+        <div>Drop an image here or <span class="fc-browse">browse</span></div>
+        <div class="fc-drop-hint">Supports PNG, JPEG, WebP, GIF, BMP</div>
+        <input type="file" id="file-input" accept="image/*" style="display:none" onchange="fcFileSelected()">
+      </div>
+      <div class="fc-output-row">
+        <label class="t-label">Output Format</label>
+        <select id="file-format" class="t-select">
+          <option value="image/png">PNG</option>
+          <option value="image/jpeg">JPEG</option>
+          <option value="image/webp">WebP</option>
+        </select>
+        <button class="t-btn t-btn-primary" onclick="convertFile()">Convert &amp; Download</button>
+      </div>
+      <canvas id="file-canvas" style="display:none"></canvas>
+    </div>
+  </section>
+
+  <!-- Regex Tester -->
+  <section id="regex-tester" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626)">/ /</div>
+      <div><h2>Regex Tester</h2><p class="tool-desc">Test regular expressions with live match highlighting</p></div></div>
+    <div class="t-card">
+      <div class="rx-pattern-row">
+        <span class="rx-delim">/</span>
+        <input type="text" id="regex-pattern" placeholder="([a-z]+)" oninput="testRegex()" class="rx-input">
+        <span class="rx-delim">/</span>
+        <input type="text" id="regex-flags" value="gi" size="4" oninput="testRegex()" class="rx-flags">
+      </div>
+      <label class="t-label">Test String</label>
+      <textarea id="regex-text" class="t-textarea" placeholder="Enter test string here..." oninput="testRegex()" style="min-height:140px"></textarea>
+      <label class="t-label">Matches</label>
+      <div id="regex-out" class="t-preview preview-box"></div>
+    </div>
+  </section>
+
+  <!-- JSON Diff -->
+  <section id="json-diff" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#f97316,#ea580c)">⇿</div>
+      <div><h2>JSON Diff</h2><p class="tool-desc">Compare two JSON objects and highlight differences</p></div></div>
+    <div class="t-actions">
+      <button class="t-btn t-btn-primary" onclick="jsonDiff()">Compare</button>
+      <button class="t-btn t-btn-ghost" onclick="clearFields('diff-a','diff-b');document.getElementById('diff-out').innerHTML=''">Clear</button>
+    </div>
+    <div class="t-split">
+      <div class="t-col"><div class="t-col-head"><span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span><span class="t-col-title">JSON A</span></div>
+        <textarea id="diff-a" class="t-textarea" placeholder='{"a":1,"b":2}'></textarea></div>
+      <div class="t-col"><div class="t-col-head"><span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span><span class="t-col-title">JSON B</span></div>
+        <textarea id="diff-b" class="t-textarea" placeholder='{"a":1,"b":3}'></textarea></div>
+    </div>
+    <div class="t-card" style="margin-top:16px">
+      <label class="t-label">Differences</label>
+      <div id="diff-out" class="t-preview diff-box"></div>
+    </div>
+  </section>
+
+  <!-- SQL Formatter -->
+  <section id="sql-formatter" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#3b82f6,#2563eb)">🗃</div>
+      <div><h2>SQL Formatter</h2><p class="tool-desc">Format and beautify SQL queries</p></div></div>
+    <div class="t-actions">
+      <button class="t-btn t-btn-primary" onclick="sqlFormat()">Format</button>
+      <button class="t-btn t-btn-ghost" onclick="clearFields('sql-in','sql-out')">Clear</button>
+    </div>
+    <div class="t-split">
+      <div class="t-col"><div class="t-col-head"><span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span><span class="t-col-title">Input SQL</span></div>
+        <textarea id="sql-in" class="t-textarea" placeholder="SELECT id, name FROM users WHERE age > 18 ORDER BY name"></textarea></div>
+      <div class="t-col"><div class="t-col-head"><span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span><span class="t-col-title">Formatted</span></div>
+        <textarea id="sql-out" class="t-textarea" readonly></textarea></div>
+    </div>
+  </section>
+
+  <!-- HTML Encoder -->
+  <section id="html-encoder" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#14b8a6,#0d9488)">&lt;/&gt;</div>
+      <div><h2>HTML Encoder / Decoder</h2><p class="tool-desc">Encode or decode HTML entities</p></div></div>
+    <div class="t-actions">
+      <button class="t-btn t-btn-primary" onclick="htmlEnc()">Encode</button>
+      <button class="t-btn" onclick="htmlDecFn()">Decode</button>
+      <button class="t-btn t-btn-ghost" onclick="clearFields('html-in','html-out')">Clear</button>
+    </div>
+    <div class="t-split">
+      <div class="t-col"><div class="t-col-head"><span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span><span class="t-col-title">Input</span></div>
+        <textarea id="html-in" class="t-textarea" placeholder='<div class="hello">World & "Foo"</div>'></textarea></div>
+      <div class="t-col"><div class="t-col-head"><span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span><span class="t-col-title">Output</span></div>
+        <textarea id="html-out" class="t-textarea" readonly></textarea></div>
+    </div>
+  </section>
+
+  <!-- UUID Generator -->
+  <section id="uuid-generator" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#6366f1,#4f46e5)">◻</div>
+      <div><h2>UUID Generator</h2><p class="tool-desc">Generate random UUIDs (v4)</p></div></div>
+    <div class="t-card">
+      <div class="t-actions">
+        <label class="t-label" style="margin:0;display:flex;align-items:center;gap:8px">Count <input type="number" id="uuid-count" value="5" min="1" max="100" class="t-input" style="width:80px"></label>
+        <button class="t-btn t-btn-primary" onclick="genUUIDs()">Generate</button>
+        <button class="t-btn t-btn-ghost" onclick="copyText('uuid-out')">Copy All</button>
+      </div>
+      <textarea id="uuid-out" class="t-textarea" readonly style="min-height:220px"></textarea>
+    </div>
+  </section>
+
+  <!-- JSON to CSV -->
+  <section id="json-to-csv" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#22c55e,#16a34a)">📊</div>
+      <div><h2>JSON to CSV</h2><p class="tool-desc">Convert a JSON array of objects to CSV format</p></div></div>
+    <div class="t-actions">
+      <button class="t-btn t-btn-primary" onclick="jsonToCsv()">Convert</button>
+      <button class="t-btn" onclick="downloadText('csv-out','data.csv')">💾 Download CSV</button>
+      <button class="t-btn t-btn-ghost" onclick="clearFields('csv-in','csv-out')">Clear</button>
+    </div>
+    <div class="t-split">
+      <div class="t-col"><div class="t-col-head"><span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span><span class="t-col-title">JSON Array</span></div>
+        <textarea id="csv-in" class="t-textarea" placeholder='[{"name":"John","age":30},{"name":"Jane","age":25}]'></textarea></div>
+      <div class="t-col"><div class="t-col-head"><span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span><span class="t-col-title">CSV Output</span></div>
+        <textarea id="csv-out" class="t-textarea" readonly></textarea></div>
+    </div>
+  </section>
+
+  <!-- CSS Minifier -->
+  <section id="css-minifier" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#ec4899,#db2777)">🎀</div>
+      <div><h2>CSS Minifier</h2><p class="tool-desc">Minify or beautify CSS to optimize file size</p></div></div>
+    <div class="t-actions">
+      <button class="t-btn t-btn-primary" onclick="cssMinify()">Minify</button>
+      <button class="t-btn" onclick="cssBeautify()">Beautify</button>
+      <button class="t-btn t-btn-ghost" onclick="clearFields('css-in','css-out')">Clear</button>
+    </div>
+    <div class="t-split">
+      <div class="t-col"><div class="t-col-head"><span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span><span class="t-col-title">Input CSS</span></div>
+        <textarea id="css-in" class="t-textarea" placeholder="body {&#10;  color: red;&#10;  margin: 0;&#10;}"></textarea></div>
+      <div class="t-col"><div class="t-col-head"><span class="jf-dot red"></span><span class="jf-dot yellow"></span><span class="jf-dot green"></span><span class="t-col-title">Output</span></div>
+        <textarea id="css-out" class="t-textarea" readonly></textarea></div>
+    </div>
+    <div id="css-stats" class="t-status"></div>
+  </section>
+
+  <!-- Random Selector -->
+  <section id="random-selector" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#fbbf24,#f59e0b)">🎲</div>
+      <div><h2>Random Selector</h2><p class="tool-desc">Spin the wheel or pick randomly from a list</p></div></div>
+
+    <!-- Mode tabs -->
+    <div class="rs-tabs">
+      <button class="rs-tab active" onclick="rsMode('list',this)">📝 List Mode</button>
+      <button class="rs-tab" onclick="rsMode('wheel',this)">🎡 Spin Wheel</button>
+      <button class="rs-tab" onclick="rsMode('range',this)">🔢 Number Range</button>
+    </div>
+
+    <!-- List Mode -->
+    <div class="rs-panel active" id="rs-list-panel">
+      <div class="t-card">
+        <label class="t-label">Items (one per line)</label>
+        <textarea id="rand-in" class="t-textarea" placeholder="Apple&#10;Banana&#10;Cherry&#10;Date&#10;Elderberry" style="min-height:160px"></textarea>
+        <div class="t-actions">
+          <label class="t-label" style="margin:0;display:flex;align-items:center;gap:8px">Pick <input type="number" id="rand-count" value="1" min="1" class="t-input" style="width:70px"></label>
+          <button class="t-btn t-btn-primary" onclick="randomPick()">🎲 Pick Random</button>
+        </div>
+        <div id="rand-out" class="rand-result"></div>
+      </div>
+    </div>
+
+    <!-- Wheel Mode -->
+    <div class="rs-panel" id="rs-wheel-panel">
+      <div class="t-card">
+        <label class="t-label">Items (one per line)</label>
+        <textarea id="wheel-items" class="t-textarea" placeholder="Pizza&#10;Sushi&#10;Burger&#10;Tacos&#10;Pasta&#10;Salad" style="min-height:120px" oninput="wheelDraw()"></textarea>
+        <div class="wheel-container">
+          <div class="wheel-pointer">▼</div>
+          <canvas id="wheel-canvas" width="400" height="400"></canvas>
+        </div>
+        <div class="t-actions" style="justify-content:center">
+          <button class="rs-spin-btn" onclick="wheelSpin()" id="wheel-spin-btn">
+            <span class="rs-spin-icon">🎡</span> SPIN
+          </button>
+        </div>
+        <div id="wheel-result" class="rand-result" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- Range Mode -->
+    <div class="rs-panel" id="rs-range-panel">
+      <div class="t-card">
+        <div class="rs-range-row">
+          <div>
+            <label class="t-label">Min</label>
+            <input type="number" id="range-min" value="0" class="t-input">
+          </div>
+          <span class="uc-arrow">→</span>
+          <div>
+            <label class="t-label">Max</label>
+            <input type="number" id="range-max" value="100" class="t-input">
+          </div>
+        </div>
+        <div class="t-actions" style="justify-content:center">
+          <button class="t-btn t-btn-primary" onclick="rangePick()" style="font-size:1.1rem;padding:14px 36px">🎲 Pick Number</button>
+        </div>
+        <div id="range-result" class="rs-range-result"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JWT Decoder -->
+  <section id="jwt-decoder" class="tool-panel">
+    <div class="t-hero"><div class="t-icon" style="background:linear-gradient(135deg,#f43f5e,#e11d48)">🔓</div>
+      <div><h2>JWT Decoder</h2><p class="tool-desc">Decode and inspect JSON Web Tokens</p></div></div>
+    <div class="t-card">
+      <label class="t-label">JWT Token</label>
+      <textarea id="jwt-in" class="t-textarea" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." style="min-height:100px"></textarea>
+      <div class="t-actions"><button class="t-btn t-btn-primary" onclick="decodeJWT()">Decode Token</button></div>
+      <div class="jwt-grid">
+        <div class="jwt-section">
+          <div class="jwt-section-head"><span class="jwt-badge" style="background:#3b82f6">Header</span></div>
+          <pre id="jwt-header" class="jwt-pre"></pre>
+        </div>
+        <div class="jwt-section">
+          <div class="jwt-section-head"><span class="jwt-badge" style="background:#a855f7">Payload</span></div>
+          <pre id="jwt-payload" class="jwt-pre"></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
