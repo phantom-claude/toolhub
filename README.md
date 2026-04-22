@@ -1,8 +1,8 @@
-# 🛠 MyToolHub
+# 🛠 ToolHub
 
 Personal utilities hub — a single landing page linking to multiple tools.
 
-🔗 **Live Demo:** [https://phantom-claude.github.io/mytoolhub/](https://phantom-claude.github.io/mytoolhub/)
+🔗 **Live Demo:** [https://phantom-claude.github.io/toolhub/](https://phantom-claude.github.io/toolhub/)
 
 ## Apps
 
