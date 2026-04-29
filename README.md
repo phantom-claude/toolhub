@@ -10,6 +10,7 @@ Personal utilities hub — a single landing page linking to multiple tools.
 |-----|-------------|
 | [DevToolbox](devtoolbox/) | 20+ developer utilities — JSON formatter, Base64, regex, color picker, and more |
 | [StockLens](stocklens/) | Covered Call premium calculator with real-time stock prices and VIX gauge |
+| [Meeting Planner](meeting-planner/) | Cross-time-zone meeting suggestions for Beijing and Seattle with holiday annotations |
 
 ## Tech Stack
 
