@@ -303,146 +303,180 @@
       font-size: .78rem;
     }
 
-    .slot-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .slot {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 16px;
-      padding: 16px;
+    .calendar-shell {
+      overflow-x: auto;
       border: 1px solid var(--border);
-      border-radius: 16px;
-      background: rgba(2, 6, 23, .42);
-      transition: border-color .2s, transform .2s, background .2s;
+      border-radius: 18px;
+      background: rgba(2, 6, 23, .38);
     }
 
-    .slot:hover {
-      transform: translateY(-1px);
-      border-color: rgba(125, 211, 252, .3);
-      background: rgba(15, 23, 42, .76);
-    }
-
-    .slot.best {
-      border-color: rgba(52, 211, 153, .32);
-      background: linear-gradient(145deg, rgba(6, 78, 59, .2), rgba(2, 6, 23, .5));
-    }
-
-    .rank {
-      width: 42px;
-      height: 42px;
+    .calendar-weekdays {
+      min-width: 860px;
       display: grid;
-      place-items: center;
-      border-radius: 14px;
-      background: rgba(56, 189, 248, .1);
-      color: #bae6fd;
-      font-weight: 900;
-      font-variant-numeric: tabular-nums;
+      grid-template-columns: repeat(7, 1fr);
+      border-bottom: 1px solid var(--border);
+      background: rgba(15, 23, 42, .9);
     }
 
-    .slot.best .rank {
-      background: rgba(52, 211, 153, .14);
-      color: #86efac;
-    }
-
-    .slot-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: rgba(56, 189, 248, .1);
-      color: #bae6fd;
-      font-size: .72rem;
-      font-weight: 800;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-    }
-
-    .time-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .time-card {
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      background: rgba(15, 23, 42, .72);
-    }
-
-    .time-card span {
-      display: block;
+    .calendar-weekdays div {
+      padding: 12px 14px;
       color: var(--text-soft);
-      font-size: .76rem;
-      font-weight: 800;
+      font-size: .75rem;
+      font-weight: 900;
       letter-spacing: .08em;
       text-transform: uppercase;
-      margin-bottom: 4px;
+      border-right: 1px solid var(--border);
     }
 
-    .time-card strong {
-      display: block;
+    .calendar-weekdays div:last-child { border-right: 0; }
+
+    .calendar-grid {
+      min-width: 860px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background: var(--border);
+      gap: 1px;
+    }
+
+    .calendar-cell {
+      min-height: 132px;
+      padding: 12px;
+      background: rgba(15, 23, 42, .72);
+      position: relative;
+    }
+
+    .calendar-cell.empty {
+      background: rgba(2, 6, 23, .25);
+    }
+
+    .calendar-cell.weekend {
+      background: rgba(30, 27, 75, .36);
+    }
+
+    .calendar-cell.ideal {
+      box-shadow: inset 0 0 0 1px rgba(52, 211, 153, .2);
+    }
+
+    .calendar-cell.holiday {
+      box-shadow: inset 0 0 0 1px rgba(251, 113, 133, .22);
+    }
+
+    .calendar-date-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .calendar-date-num {
       color: var(--text);
-      font-size: .98rem;
-      margin-bottom: 2px;
+      font-size: 1.15rem;
+      font-weight: 900;
+      line-height: 1;
     }
 
-    .time-card small {
+    .calendar-date-key {
       color: var(--muted);
-      font-size: .78rem;
+      font-size: .7rem;
+      font-weight: 800;
+      margin-top: 3px;
     }
 
-    .badges {
+    .calendar-day-badges {
       display: flex;
       flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 4px;
+    }
+
+    .calendar-day-badge {
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, .1);
+      color: var(--text-soft);
+      font-size: .66rem;
+      font-weight: 800;
+    }
+
+    .calendar-day-badge.good { background: rgba(52, 211, 153, .13); color: #86efac; }
+    .calendar-day-badge.warn { background: rgba(251, 191, 36, .13); color: #fde68a; }
+    .calendar-day-badge.holiday { background: rgba(251, 113, 133, .13); color: #fda4af; }
+    .calendar-day-badge.weekend { background: rgba(192, 132, 252, .13); color: #d8b4fe; }
+
+    .calendar-slots {
+      display: grid;
       gap: 7px;
     }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 5px 9px;
-      border-radius: 999px;
+    .calendar-slot {
+      height: auto;
+      width: 100%;
+      display: block;
+      padding: 8px 10px;
+      border: 1px solid rgba(56, 189, 248, .2);
+      border-radius: 11px;
+      background: rgba(56, 189, 248, .12);
+      color: #dbeafe;
+      text-align: left;
+      box-shadow: none;
+      cursor: pointer;
+      transition: transform .15s, border-color .15s, background .15s;
+    }
+
+    .calendar-slot:hover {
+      transform: translateY(-1px);
+      border-color: rgba(125, 211, 252, .55);
+      background: rgba(56, 189, 248, .18);
+      box-shadow: none;
+    }
+
+    .calendar-slot.ideal {
+      border-color: rgba(52, 211, 153, .28);
+      background: rgba(52, 211, 153, .13);
+      color: #d1fae5;
+    }
+
+    .calendar-slot.warn {
+      border-color: rgba(251, 191, 36, .3);
+      background: rgba(251, 191, 36, .12);
+      color: #fef3c7;
+    }
+
+    .calendar-slot.holiday {
+      border-color: rgba(251, 113, 133, .28);
+      background: rgba(251, 113, 133, .12);
+      color: #ffe4e6;
+    }
+
+    .calendar-slot strong,
+    .calendar-slot span,
+    .calendar-slot small {
+      display: block;
+    }
+
+    .calendar-slot strong {
+      font-size: .84rem;
+      margin-bottom: 3px;
+    }
+
+    .calendar-slot span {
+      color: inherit;
       font-size: .76rem;
-      font-weight: 700;
-      background: rgba(148, 163, 184, .1);
-      color: var(--text-soft);
+      font-weight: 800;
     }
 
-    .badge.good { background: rgba(52, 211, 153, .13); color: #86efac; }
-    .badge.warn { background: rgba(251, 191, 36, .13); color: #fde68a; }
-    .badge.holiday { background: rgba(251, 113, 133, .13); color: #fda4af; }
-    .badge.weekend { background: rgba(192, 132, 252, .13); color: #d8b4fe; }
-
-    .copy-btn {
-      width: 92px;
-      background: rgba(15, 23, 42, .9);
-      border: 1px solid var(--border);
-      color: var(--text-soft);
-      box-shadow: none;
-      align-self: start;
+    .calendar-slot small {
+      color: rgba(226, 232, 240, .72);
+      font-size: .69rem;
+      margin-top: 2px;
     }
 
-    .copy-btn:hover {
-      color: #fff;
-      border-color: var(--blue);
-      background: rgba(56, 189, 248, .13);
-      box-shadow: none;
+    .calendar-more {
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 800;
+      padding: 3px 2px;
     }
 
     .empty {
@@ -463,9 +497,7 @@
     @media (max-width: 920px) {
       .control-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .summary-grid { grid-template-columns: repeat(2, 1fr); }
-      .timezone-row, .time-grid { grid-template-columns: 1fr; }
-      .slot { grid-template-columns: auto 1fr; }
-      .copy-btn { grid-column: 2; width: auto; }
+      .timezone-row { grid-template-columns: 1fr; }
       .results-head { align-items: flex-start; flex-direction: column; }
       .legend { justify-content: flex-start; }
     }
@@ -475,9 +507,6 @@
       .container { padding-inline: 14px; }
       .control-grid, .summary-grid { grid-template-columns: 1fr; }
       .controls, .results-panel { padding: 16px; }
-      .slot { grid-template-columns: 1fr; }
-      .rank { width: 100%; height: 34px; }
-      .copy-btn { grid-column: auto; }
     }
   </style>
 </head>
@@ -509,7 +538,7 @@
           </select>
         </div>
         <div class="field">
-          <label for="days">搜索天数</label>
+          <label for="days">显示天数</label>
           <input type="number" id="days" min="1" max="30" value="14">
         </div>
         <div class="field">
@@ -549,8 +578,8 @@
     <section class="panel results-panel">
       <div class="results-head">
         <div>
-          <h2>推荐时间</h2>
-          <p>排序优先级：双方工作时间交集 → 非假期/非周末 → 越接近白天核心时间越靠前。</p>
+          <h2>推荐日历</h2>
+          <p>推荐时间直接放进日历格子里；点击会议块即可复制北京和西雅图时间。</p>
         </div>
         <div class="legend">
           <span>✅ 双方 7:00 AM - 6:00 PM</span>
@@ -558,7 +587,7 @@
           <span>🌙 备选时段</span>
         </div>
       </div>
-      <div id="results" class="slot-list"></div>
+      <div id="results"></div>
       <p class="note">假期标注基于内置规则：美国联邦假日、中国固定节日及常见农历节日；中国调休安排请以官方日历为准。</p>
     </section>
   </main>
@@ -603,6 +632,7 @@
       document.getElementById('days').value = String(days);
 
       if (!startKey) {
+        document.getElementById('summary').innerHTML = '';
         renderEmpty('请选择开始日期。');
         return;
       }
@@ -620,12 +650,12 @@
         slots.push(evaluateSlot(start, duration));
       }
 
-      latestSlots = slots
-        .sort(compareSlots)
-        .slice(0, 24);
+      const sortedSlots = slots.sort(compareSlots);
+      const daysData = buildCalendarDays(startKey, days, sortedSlots);
+      latestSlots = [];
 
-      renderSummary(slots, latestSlots, duration, days);
-      renderResults(latestSlots);
+      renderSummary(sortedSlots, daysData, duration, days);
+      renderResults(daysData);
     }
 
     function evaluateSlot(start, duration) {
@@ -695,86 +725,162 @@
       return a.start - b.start;
     }
 
-    function renderSummary(allSlots, displayedSlots, duration, days) {
+    function preferredSlotsForDate(sortedSlots) {
+      const idealSlots = sortedSlots.filter(slot => slot.allInWindow && !slot.anyHoliday && !slot.anyWeekend);
+      const overlapSlots = sortedSlots.filter(slot => slot.allInWindow);
+      if (idealSlots.length) return idealSlots;
+      if (overlapSlots.length) return overlapSlots;
+      return sortedSlots;
+    }
+
+    function buildCalendarDays(startKey, days, sortedSlots) {
+      const slotsByDate = new Map();
+      sortedSlots.forEach(slot => {
+        const dateKey = slot.cityResults[0].startParts.dateKey;
+        if (!slotsByDate.has(dateKey)) slotsByDate.set(dateKey, []);
+        slotsByDate.get(dateKey).push(slot);
+      });
+
+      return Array.from({ length: days }, (_, offset) => {
+        const dateKey = addDaysToKey(startKey, offset);
+        const slots = slotsByDate.get(dateKey) || [];
+        const idealSlots = slots.filter(slot => slot.allInWindow && !slot.anyHoliday && !slot.anyWeekend);
+        const overlapSlots = slots.filter(slot => slot.allInWindow);
+        const displaySlots = preferredSlotsForDate(slots).slice(0, 1);
+        const parts = getZoneParts(dateFromKey(dateKey), CITIES[0].timeZone);
+        const holidayLabels = uniqueValues(slots.flatMap(slot =>
+          slot.cityResults
+            .filter(result => result.holiday)
+            .map(result => `${result.city.label}: ${result.holiday}`)
+        ));
+        const weekend = parts.weekday === 'Sat' || parts.weekday === 'Sun';
+
+        return {
+          dateKey,
+          parts,
+          slots,
+          idealSlots,
+          overlapSlots,
+          displaySlots,
+          holidayLabels,
+          weekend,
+        };
+      });
+    }
+
+    function renderSummary(allSlots, daysData, duration, days) {
       const strictSlots = allSlots.filter(slot => slot.allInWindow && !slot.anyHoliday && !slot.anyWeekend);
-      const holidaySlots = allSlots.filter(slot => slot.anyHoliday);
-      const best = displayedSlots[0];
-      const bestLabel = best ? formatCompactSlot(best) : 'No slot';
+      const overlapSlots = allSlots.filter(slot => slot.allInWindow);
+      const bestDay = daysData.find(day => day.idealSlots.length)
+        || daysData.find(day => day.overlapSlots.length)
+        || daysData.find(day => day.displaySlots.length);
+      const best = bestDay ? bestDay.displaySlots[0] : null;
+      const bestLabel = best
+        ? `${best.cityResults[0].startParts.dateKey} ${formatCompactSlot(best)}`
+        : 'No slot';
 
       document.getElementById('summary').innerHTML = `
         <div class="metric"><strong>${strictSlots.length}</strong><span>双方工作时段且非假期/周末</span></div>
-        <div class="metric"><strong>${displayedSlots.length}</strong><span>展示的候选时间</span></div>
+        <div class="metric"><strong>${overlapSlots.length}</strong><span>${days} 天内双方工作时间重叠</span></div>
         <div class="metric"><strong>${duration}m</strong><span>会议时长</span></div>
         <div class="metric"><strong style="font-size:1rem;line-height:1.35">${escapeHtml(bestLabel)}</strong><span>${days} 天内最佳建议</span></div>
       `;
-
-      if (!displayedSlots.length && holidaySlots.length) {
-        renderEmpty('搜索范围内只有假期或周末冲突，请扩大搜索天数。');
-      }
     }
 
-    function renderResults(slots) {
-      if (!slots.length) {
-        renderEmpty('未找到候选时间，请扩大搜索天数或缩短会议时长。');
+    function renderResults(daysData) {
+      if (!daysData.some(day => day.slots.length)) {
+        renderEmpty('未找到候选时间，请扩大显示天数或缩短会议时长。');
         return;
       }
 
-      document.getElementById('results').innerHTML = slots.map((slot, index) => {
-        const beijing = slot.cityResults[0];
-        const seattle = slot.cityResults[1];
-        const className = slot.allInWindow && !slot.anyHoliday && !slot.anyWeekend ? 'slot best' : 'slot';
-        const title = slot.allInWindow ? '推荐' : '备选';
-        const badges = buildBadges(slot);
+      latestSlots = [];
+      const leadingCells = calendarWeekdayIndex(daysData[0].parts.weekday);
+      const cells = [];
+      for (let i = 0; i < leadingCells; i++) cells.push('<div class="calendar-cell empty"></div>');
+      daysData.forEach(day => cells.push(renderCalendarCell(day)));
+      while (cells.length % 7 !== 0) cells.push('<div class="calendar-cell empty"></div>');
 
-        return `
-          <article class="${className}">
-            <div class="rank">#${index + 1}</div>
-            <div>
-              <div class="slot-title">
-                ${title}
-                <span class="pill">${Math.round(slot.score)} score</span>
-              </div>
-              <div class="time-grid">
-                ${renderTimeCard(beijing, slot)}
-                ${renderTimeCard(seattle, slot)}
-              </div>
-              <div class="badges">${badges}</div>
-            </div>
-            <button class="copy-btn" type="button" onclick="copySlot(${index}, this)">Copy</button>
-          </article>
-        `;
-      }).join('');
-    }
-
-    function renderTimeCard(result, slot) {
-      const city = result.city;
-      return `
-        <div class="time-card">
-          <span>${escapeHtml(city.label)}</span>
-          <strong>${escapeHtml(formatRange(slot.start, slot.end, city.timeZone, result.startParts, result.endParts))}</strong>
-          <small>${escapeHtml(city.timeZone)}</small>
+      document.getElementById('results').innerHTML = `
+        <div class="calendar-shell">
+          <div class="calendar-weekdays">
+            <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+          </div>
+          <div class="calendar-grid">${cells.join('')}</div>
         </div>
       `;
     }
 
-    function buildBadges(slot) {
+    function renderCalendarCell(day) {
+      const classes = ['calendar-cell'];
+      if (day.weekend) classes.push('weekend');
+      if (day.holidayLabels.length) classes.push('holiday');
+      if (day.idealSlots.length) classes.push('ideal');
+      const hiddenCount = Math.max(0, preferredSlotsForDate(day.slots).length - day.displaySlots.length);
+
+      return `
+        <div class="${classes.join(' ')}">
+          <div class="calendar-date-row">
+            <div>
+              <div class="calendar-date-num">${day.parts.month}/${day.parts.day}</div>
+              <div class="calendar-date-key">${escapeHtml(WEEKDAY_ZH[day.parts.weekday] || day.parts.weekday)}</div>
+            </div>
+            <div class="calendar-day-badges">${renderCalendarDayBadges(day)}</div>
+          </div>
+          <div class="calendar-slots">
+            ${day.displaySlots.map(slot => renderCalendarSlot(slot)).join('')}
+            ${hiddenCount ? `<div class="calendar-more">+ ${hiddenCount} more</div>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCalendarSlot(slot) {
+      const index = registerSlot(slot);
+      const beijingTime = `${formatTime(slot.start, CITIES[0].timeZone)} - ${formatTime(slot.end, CITIES[0].timeZone)}`;
+      const seattleTime = `${formatTime(slot.start, CITIES[1].timeZone)} - ${formatTime(slot.end, CITIES[1].timeZone)}`;
+      const title = slot.cityResults.map(result =>
+        `${result.city.label}: ${formatRange(slot.start, slot.end, result.city.timeZone, result.startParts, result.endParts)}`
+      ).join('\n');
+
+      return `
+        <button class="calendar-slot ${calendarSlotClass(slot)}" type="button" onclick="copySlot(${index}, this)" title="${escapeHtml(title)}">
+          <strong>${escapeHtml(slotStatusText(slot))}</strong>
+          <span>${escapeHtml(beijingTime)} 北京</span>
+          <small>${escapeHtml(seattleTime)} Seattle</small>
+        </button>
+      `;
+    }
+
+    function renderCalendarDayBadges(day) {
       const badges = [];
-      if (slot.allInWindow) {
-        badges.push('<span class="badge good">✅ 双方都在 7:00 AM - 6:00 PM</span>');
-      } else {
-        badges.push(`<span class="badge warn">🌙 ${slot.outsideMinutes} 分钟超出偏好时段</span>`);
-      }
-
-      slot.cityResults.forEach(result => {
-        if (result.holiday) {
-          badges.push(`<span class="badge holiday">🎌 ${escapeHtml(result.city.label)}: ${escapeHtml(result.holiday)}</span>`);
-        }
-        if (result.weekend) {
-          badges.push(`<span class="badge weekend">🗓 ${escapeHtml(result.city.label)}: 周末</span>`);
-        }
+      if (day.idealSlots.length) badges.push(`<span class="calendar-day-badge good">${day.idealSlots.length} ideal</span>`);
+      else if (day.overlapSlots.length) badges.push(`<span class="calendar-day-badge warn">${day.overlapSlots.length} overlap</span>`);
+      if (day.weekend) badges.push('<span class="calendar-day-badge weekend">Weekend</span>');
+      day.holidayLabels.slice(0, 2).forEach(label => {
+        badges.push(`<span class="calendar-day-badge holiday">${escapeHtml(label)}</span>`);
       });
-
       return badges.join('');
+    }
+
+    function calendarSlotClass(slot) {
+      if (slot.anyHoliday || slot.anyWeekend) return 'holiday';
+      if (slot.allInWindow) return 'ideal';
+      return 'warn';
+    }
+
+    function slotStatusText(slot) {
+      if (slot.anyHoliday || slot.anyWeekend) return 'Holiday / Weekend';
+      if (slot.allInWindow) return 'Recommended';
+      return 'Backup';
+    }
+
+    function calendarWeekdayIndex(weekday) {
+      return Math.max(0, ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].indexOf(weekday));
+    }
+
+    function registerSlot(slot) {
+      latestSlots.push(slot);
+      return latestSlots.length - 1;
     }
 
     function renderEmpty(message) {
@@ -789,8 +895,10 @@
       }).join('\n');
 
       navigator.clipboard.writeText(text).then(() => {
+        const originalHtml = button.dataset.originalHtml || button.innerHTML;
+        button.dataset.originalHtml = originalHtml;
         button.textContent = 'Copied';
-        setTimeout(() => { button.textContent = 'Copy'; }, 1300);
+        setTimeout(() => { button.innerHTML = originalHtml; }, 1300);
       });
     }
 
@@ -980,6 +1088,11 @@
       return keyFromUtcDate(new Date(Date.UTC(year, month - 1, day + days, 12)));
     }
 
+    function dateFromKey(dateKey) {
+      const [year, month, day] = dateKey.split('-').map(Number);
+      return new Date(Date.UTC(year, month - 1, day, 12));
+    }
+
     function keyFromDate(year, month, day) {
       return keyFromUtcDate(new Date(Date.UTC(year, month - 1, day, 12)));
     }
@@ -994,6 +1107,10 @@
 
     function clamp(value, min, max) {
       return Math.min(max, Math.max(min, value));
+    }
+
+    function uniqueValues(values) {
+      return [...new Set(values)];
     }
 
     function escapeHtml(value) {
