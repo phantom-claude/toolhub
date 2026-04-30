@@ -250,6 +250,11 @@ input:focus, select:focus, textarea:focus {
   box-shadow: 0 12px 30px rgba(37, 99, 235, .25);
 }
 
+.btn.primary.alt {
+  background: linear-gradient(135deg, #059669, #2563eb);
+  box-shadow: 0 12px 30px rgba(5, 150, 105, .22);
+}
+
 .btn.ghost {
   background: transparent;
   color: var(--text-soft);
@@ -267,6 +272,36 @@ input:focus, select:focus, textarea:focus {
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
   margin-bottom: 18px;
+}
+
+.quick-roll {
+  display: flex;
+  align-items: end;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.quick-roll .field {
+  min-width: 240px;
+}
+
+.quick-toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  color: var(--text-soft);
+  font-size: .86rem;
+  cursor: pointer;
+}
+
+.quick-toggle input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--green);
 }
 
 .metric {
@@ -391,6 +426,13 @@ input:focus, select:focus, textarea:focus {
   align-items: center;
 }
 
+.mini-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .problem-card p {
   color: #e0f2fe;
   font-size: 1.05rem;
@@ -488,5 +530,6 @@ li { margin-bottom: 8px; }
   .hero, .container { padding-inline: 14px; }
   .setup-grid, .summary-grid, .detail-grid, .rubric-list { grid-template-columns: 1fr; }
   .round-top, .section-head { flex-direction: column; }
+  .quick-roll { align-items: stretch; }
   .score-box { width: 100%; }
 }

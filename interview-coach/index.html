@@ -75,8 +75,26 @@
 
       <div class="actions-row">
         <button class="btn primary" id="generate-btn" type="button">Generate interview loop</button>
+        <button class="btn primary alt" id="roll-btn" type="button">Roll random question</button>
         <button class="btn" id="copy-loop-btn" type="button">Copy loop prompt</button>
         <button class="btn" id="export-btn" type="button">Export JSON</button>
+      </div>
+
+      <div class="quick-roll">
+        <label class="field">
+          <span>Roll category</span>
+          <select id="roll-category">
+            <option value="coding" selected>Coding</option>
+            <option value="concurrency">Concurrency / Machine Coding</option>
+            <option value="design">System Design</option>
+            <option value="behavioral">Behavioral</option>
+            <option value="fit">Recruiter / Fit</option>
+          </select>
+        </label>
+        <label class="quick-toggle">
+          <input type="checkbox" id="avoid-used" checked>
+          <span>Avoid questions already in the current loop when possible</span>
+        </label>
       </div>
     </section>
 
@@ -121,7 +139,10 @@
           <div class="card problem-card">
             <div class="card-head">
               <h3>Problem / Prompt</h3>
-              <button class="btn tiny" id="copy-round-btn" type="button">Copy round</button>
+              <div class="mini-actions">
+                <button class="btn tiny" id="reroll-round-btn" type="button">Reroll question</button>
+                <button class="btn tiny" id="copy-round-btn" type="button">Copy round</button>
+              </div>
             </div>
             <p id="round-prompt"></p>
             <div class="tag-row" id="round-tags"></div>

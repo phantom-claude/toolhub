@@ -136,6 +136,9 @@
     loop: document.getElementById('loop-select'),
     seed: document.getElementById('seed-input'),
     generate: document.getElementById('generate-btn'),
+    roll: document.getElementById('roll-btn'),
+    rollCategory: document.getElementById('roll-category'),
+    avoidUsed: document.getElementById('avoid-used'),
     reset: document.getElementById('reset-btn'),
     copyLoop: document.getElementById('copy-loop-btn'),
     exportBtn: document.getElementById('export-btn'),
@@ -157,6 +160,7 @@
     saveStatus: document.getElementById('save-status'),
     clearNotes: document.getElementById('clear-notes-btn'),
     copyRound: document.getElementById('copy-round-btn'),
+    rerollRound: document.getElementById('reroll-round-btn'),
     script: document.getElementById('script-block'),
     toast: document.getElementById('toast'),
   };
@@ -203,6 +207,7 @@
     });
 
     els.copyLoop.addEventListener('click', () => copyText(sessionToPrompt()));
+    els.roll.addEventListener('click', rollRandomQuestion);
     els.exportBtn.addEventListener('click', exportJson);
     els.notes.addEventListener('input', updateActiveRoundFromForm);
     els.score.addEventListener('change', updateActiveRoundFromForm);
@@ -219,6 +224,62 @@
       const round = getActiveRound();
       if (round) copyText(roundToPrompt(round));
     });
+    els.rerollRound.addEventListener('click', rerollActiveRound);
+  }
+
+  function rollRandomQuestion() {
+    const company = els.company.value;
+    const level = els.level.value;
+    const category = els.rollCategory.value;
+    const companyBank = BANK[company];
+    const templateId = templateIdForCategory(category);
+    const template = companyBank.templates[templateId];
+    const seed = `${els.seed.value.trim() || Date.now()}:quick-roll:${category}:${Math.random()}`;
+    const rng = seededRandom(seed);
+    const used = els.avoidUsed.checked ? usedQuestionTitles(category) : new Set();
+    const question = pickQuestion(companyBank.questions[category], rng, used);
+
+    state = {
+      session: {
+        id: `roll-${Date.now()}`,
+        company,
+        companyLabel: companyBank.label,
+        level,
+        loopStyle: `single-${category}`,
+        seed: els.seed.value.trim() || 'quick-roll',
+        createdAt: new Date().toISOString(),
+      },
+      rounds: [createRound(1, templateId, template, question)],
+      activeRoundId: 'round-1',
+    };
+    activeRoundId = 'round-1';
+    saveState();
+    render();
+    showToast(`Rolled ${question.title}.`);
+  }
+
+  function rerollActiveRound() {
+    const round = getActiveRound();
+    if (!round) return;
+    if ((round.notes.trim() || round.score) && !confirm('Reroll this round? Existing notes and score for this round will be cleared.')) return;
+
+    const companyBank = BANK[state.session.company];
+    const template = companyBank.templates[round.templateId];
+    const rng = seededRandom(`${state.session.id}:${round.id}:reroll:${Date.now()}:${Math.random()}`);
+    const used = usedQuestionTitles(round.category);
+    used.delete(round.question.title);
+    const question = pickQuestion(companyBank.questions[round.category], rng, used);
+
+    round.question = question;
+    round.notes = '';
+    round.score = '';
+    round.rerolledAt = new Date().toISOString();
+    round.rerollCount = (round.rerollCount || 0) + 1;
+    round.rubric = template.rubric;
+    round.script = template.script;
+    saveState();
+    render();
+    showToast(`Rerolled to ${question.title}.`);
   }
 
   function generateSession(config) {
@@ -229,19 +290,7 @@
     const rounds = templateIds.map((templateId, index) => {
       const template = companyBank.templates[templateId];
       const question = pickQuestion(companyBank.questions[template.category], rng, used);
-      return {
-        id: `round-${index + 1}`,
-        number: index + 1,
-        templateId,
-        templateName: template.name,
-        duration: template.duration,
-        category: template.category,
-        question,
-        rubric: template.rubric,
-        script: template.script,
-        notes: '',
-        score: '',
-      };
+      return createRound(index + 1, templateId, template, question);
     });
 
     return {
@@ -265,6 +314,39 @@
     const question = pool[Math.floor(rng() * pool.length)];
     used.add(question.title);
     return question;
+  }
+
+  function createRound(number, templateId, template, question) {
+    return {
+      id: `round-${number}`,
+      number,
+      templateId,
+      templateName: template.name,
+      duration: template.duration,
+      category: template.category,
+      question,
+      rubric: template.rubric,
+      script: template.script,
+      notes: '',
+      score: '',
+      rerollCount: 0,
+    };
+  }
+
+  function templateIdForCategory(category) {
+    return {
+      fit: 'recruiter',
+      coding: 'coding-phone',
+      concurrency: 'concurrency',
+      design: 'system-design',
+      behavioral: 'behavioral',
+    }[category] || 'coding-phone';
+  }
+
+  function usedQuestionTitles(category) {
+    return new Set((state.rounds || [])
+      .filter(round => !category || round.category === category)
+      .map(round => round.question.title));
   }
 
   function render() {
@@ -326,7 +408,7 @@
     els.view.classList.remove('hidden');
     els.kicker.textContent = `Round ${round.number} · ${round.category}`;
     els.title.textContent = `${round.templateName}: ${round.question.title}`;
-    els.meta.textContent = `${round.duration} · ${round.question.tags.join(', ')}`;
+    els.meta.textContent = `${round.duration} · ${round.question.tags.join(', ')}${round.rerollCount ? ` · rerolled ${round.rerollCount}x` : ''}`;
     els.prompt.textContent = round.question.prompt;
     els.tags.innerHTML = round.question.tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('');
     els.signals.innerHTML = round.question.signals.map(item => `<li>${escapeHtml(item)}</li>`).join('');
