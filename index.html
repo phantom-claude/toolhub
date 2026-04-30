@@ -99,6 +99,9 @@
         .card.meeting:hover { box-shadow: 0 12px 40px rgba(56, 189, 248, .25); }
         .card.meeting:hover::before { background: linear-gradient(135deg, rgba(56,189,248,.08), transparent); opacity: 1; }
 
+        .card.interview:hover { box-shadow: 0 12px 40px rgba(192, 132, 252, .25); }
+        .card.interview:hover::before { background: linear-gradient(135deg, rgba(192,132,252,.08), transparent); opacity: 1; }
+
         .card-icon {
             font-size: 3rem;
             margin-bottom: 1rem;
@@ -128,6 +131,7 @@
         .card.devtoolbox .badge { background: rgba(99,102,241,.15); color: #818cf8; }
         .card.stocklens .badge { background: rgba(16,185,129,.15); color: #34d399; }
         .card.meeting .badge { background: rgba(56,189,248,.15); color: #7dd3fc; }
+        .card.interview .badge { background: rgba(192,132,252,.15); color: #d8b4fe; }
 
         footer {
             position: fixed;
@@ -168,6 +172,12 @@
                 <h2>Meeting Planner</h2>
                 <p>Cross-time-zone meeting suggestions for Beijing and Seattle, with holiday annotations.</p>
                 <span class="badge">Time Zones</span>
+            </a>
+            <a href="interview-coach/index.html" class="card interview">
+                <div class="card-icon">🎯</div>
+                <h2>Interview Coach</h2>
+                <p>Generate full Databricks SDE mock interview loops with prebuilt rounds, question bank, rubrics, and notes.</p>
+                <span class="badge">Interview Prep</span>
             </a>
         </div>
     </div>

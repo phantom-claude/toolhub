@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interview Coach — ToolHub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg"></div>
+
+  <header class="hero">
+    <a class="back-link" href="../index.html">← Back to ToolHub</a>
+    <div class="eyebrow">Mock Interview System</div>
+    <div class="hero-grid">
+      <div>
+        <h1><span class="gradient-text">Interview Coach</span></h1>
+        <p class="subtitle">选择公司并生成一整组模拟面试 round。当前内置 Databricks SDE 题库：coding、concurrency、system design、behavioral、English speaking drills。</p>
+      </div>
+      <div class="hero-card">
+        <div class="hero-stat">
+          <strong id="bank-count">--</strong>
+          <span>prebuilt questions</span>
+        </div>
+        <div class="hero-stat">
+          <strong>6</strong>
+          <span>round templates</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel setup-panel">
+      <div class="section-head">
+        <div>
+          <h2>Setup</h2>
+          <p>生成一次完整的 Databricks 面试 loop。题库已内置，所有数据保存在浏览器本地。</p>
+        </div>
+        <button class="btn ghost" id="reset-btn" type="button">Reset saved session</button>
+      </div>
+
+      <div class="setup-grid">
+        <label class="field">
+          <span>Company</span>
+          <select id="company-select">
+            <option value="databricks">Databricks</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Target level</span>
+          <select id="level-select">
+            <option value="sde" selected>SDE / L4-L5</option>
+            <option value="newgrad">New Grad / Intern</option>
+            <option value="senior">Senior</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Loop style</span>
+          <select id="loop-select">
+            <option value="full" selected>Full onsite loop</option>
+            <option value="phone">Phone screen only</option>
+            <option value="coding-heavy">Coding heavy</option>
+            <option value="design-heavy">System design heavy</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Random seed</span>
+          <input id="seed-input" type="text" placeholder="optional, e.g. db-2026">
+        </label>
+      </div>
+
+      <div class="actions-row">
+        <button class="btn primary" id="generate-btn" type="button">Generate interview loop</button>
+        <button class="btn" id="copy-loop-btn" type="button">Copy loop prompt</button>
+        <button class="btn" id="export-btn" type="button">Export JSON</button>
+      </div>
+    </section>
+
+    <section class="summary-grid" id="summary-grid"></section>
+
+    <section class="workspace">
+      <aside class="panel rounds-panel">
+        <div class="rounds-head">
+          <h2>Rounds</h2>
+          <p id="session-label">No session yet</p>
+        </div>
+        <div id="round-list" class="round-list"></div>
+      </aside>
+
+      <section class="panel round-detail">
+        <div id="empty-state" class="empty-state">
+          <div class="empty-icon">🎯</div>
+          <h2>Generate a loop to start</h2>
+          <p>你会得到一组 round：每轮包含题目、考点、面试官追问、评分 rubric、口语模板和练习 checklist。</p>
+        </div>
+
+        <div id="round-view" class="round-view hidden">
+          <div class="round-top">
+            <div>
+              <div class="round-kicker" id="round-kicker"></div>
+              <h2 id="round-title"></h2>
+              <p id="round-meta"></p>
+            </div>
+            <div class="score-box">
+              <span>Self score</span>
+              <select id="score-select">
+                <option value="">Not scored</option>
+                <option value="1">1 - weak</option>
+                <option value="2">2 - partial</option>
+                <option value="3">3 - borderline</option>
+                <option value="4">4 - pass</option>
+                <option value="5">5 - strong pass</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="card problem-card">
+            <div class="card-head">
+              <h3>Problem / Prompt</h3>
+              <button class="btn tiny" id="copy-round-btn" type="button">Copy round</button>
+            </div>
+            <p id="round-prompt"></p>
+            <div class="tag-row" id="round-tags"></div>
+          </div>
+
+          <div class="detail-grid">
+            <div class="card">
+              <h3>What to demonstrate</h3>
+              <ul id="signals-list"></ul>
+            </div>
+            <div class="card">
+              <h3>Follow-ups interviewer may ask</h3>
+              <ul id="followups-list"></ul>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Rubric</h3>
+            <div id="rubric-list" class="rubric-list"></div>
+          </div>
+
+          <div class="card">
+            <h3>Answer notes</h3>
+            <textarea id="notes-input" placeholder="Record your approach, code outline, system design decisions, or behavioral STAR answer..."></textarea>
+            <div class="notes-actions">
+              <span id="save-status">Autosaved locally</span>
+              <button class="btn tiny" id="clear-notes-btn" type="button">Clear notes</button>
+            </div>
+          </div>
+
+          <div class="card coach-card">
+            <h3>Speaking / execution script</h3>
+            <pre id="script-block"></pre>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
